@@ -1,3 +1,5 @@
+# Our state machine class will extend CharacterBody2D so that
+# We can use it on our root scene element for enemies.
 extends CharacterBody2D
 class_name CharacterStateMachine
 

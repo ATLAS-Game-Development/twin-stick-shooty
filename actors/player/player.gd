@@ -10,15 +10,27 @@ func _input(event):
             var new_projectile = projectile_scene.instantiate()
             get_parent().add_child(new_projectile)
             
-            var projectile_forward = Vector2.from_angle(rotation)
+            var projectile_forward = position.direction_to(get_global_mouse_position())
             new_projectile.fire(projectile_forward, 1000.0)
             new_projectile.position = $ProjectileRefPoint.global_position
 
 func _physics_process(delta):
-    look_at(get_viewport().get_mouse_position())
+    #look_at(get_viewport().get_mouse_position())
     
-    velocity = Input.get_vector("move_left", \
-        "move_right", \
-        "move_up", \
-        "move_down") * move_speed
+    velocity = Input.get_vector("move_left", "move_right", "move_up", "move_down") * move_speed
     move_and_slide()
+    
+    # Math to sort out direction and animation
+    var angle = rad_to_deg(velocity.angle()) + 180
+    if (velocity.length() < 10):
+        $AnimationPlayer.play("idle_front")
+    else:
+        if (angle > 135 and angle < 225):
+            $AnimationPlayer.play("walk_right")
+        elif (angle > 225 and angle < 315):
+            $AnimationPlayer.play("walk_front")
+        elif (angle > 315 or angle < 45):
+            $AnimationPlayer.play("walk_left")
+        elif (angle > 45 and angle < 135):
+            #$AnimationPlayer.play("walk_left")
+            print("fix walk up!")
