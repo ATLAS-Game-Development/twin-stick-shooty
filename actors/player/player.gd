@@ -1,6 +1,7 @@
 extends CharacterBody2D
 
 @export var projectile_scene: Resource
+@export var gunshot_sfx : Resource
 @export var move_speed: float = 200.0
 
 func _input(event):
@@ -9,13 +10,16 @@ func _input(event):
         if (event.button_index == 1 and event.is_pressed()):
             var new_projectile = projectile_scene.instantiate()
             get_parent().add_child(new_projectile)
-            
+
+            GlobalAudioManager.play_SFX(gunshot_sfx, 0.4)
             var projectile_forward = position.direction_to(get_global_mouse_position())
             new_projectile.fire(projectile_forward, 1000.0)
-            new_projectile.position = $ProjectileRefPoint.global_position
+            new_projectile.position = $Weapon/ProjectileRefPoint.global_position
 
 func _physics_process(delta):
-    #look_at(get_viewport().get_mouse_position())
+    # Aiming logic
+    $Weapon.rotation = position.direction_to(get_global_mouse_position()).angle()
+    $Weapon/Sprite2D.flip_v = ($Weapon.rotation < -PI/2 or $Weapon.rotation > PI/2)
     
     velocity = Input.get_vector("move_left", "move_right", "move_up", "move_down") * move_speed
     move_and_slide()

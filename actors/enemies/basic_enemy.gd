@@ -6,4 +6,6 @@ class_name Enemy
 func hit(damage_number: int):
     hp -= damage_number
     if (hp <= 0):
+        ScoreManager.add_score(100)
         queue_free()
+        #get_tree().get_root().get_node("Main/HUD").add_score(1)
